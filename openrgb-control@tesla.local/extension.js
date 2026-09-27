@@ -97,6 +97,7 @@ class LightingService extends Signals.EventEmitter {
         this._brightness = new L.BrightnessController();
         this._queues = new Map();
         this._retryId = 0;
+        this._settleId = 0;
         this._serverStartAttempted = false;
         this._autoOff = null;
         this._destroyed = false;
@@ -105,7 +106,10 @@ class LightingService extends Signals.EventEmitter {
             this._client.connect('state-changed', () => this._onStateChanged()),
             this._client.connect('devices-changed', () => this.emit('devices-changed')),
             this._client.connect('profiles-changed', () => this.emit('profiles-changed')),
-            this._client.connect('device-updated', (_c, index) => this.emit('device-updated', index)),
+            this._client.connect('device-updated', (_c, index) => {
+                this.emit('device-updated', index);
+                this._watchDarkSettle(index);
+            }),
         ];
         this._settingsIds = [
             ...['host', 'port'].map(k => this._settings.connect(`changed::${k}`, () => this.reconnect())),
@@ -170,6 +174,20 @@ class LightingService extends Signals.EventEmitter {
 
     get isOn() {
         return this.devices.some(d => L.isOn(d.ctrl));
+    }
+
+    // Re-sync once a device that went dark mid-effect has settled into "off".
+    _watchDarkSettle(index) {
+        const ctrl = this._client.controllers[index];
+        const delay = ctrl ? L.darkSettleDelay(ctrl) : 0;
+        if (!delay || this._settleId)
+            return;
+        this._settleId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, delay, () => {
+            this._settleId = 0;
+            this.emit('state-changed');
+            this._client.controllers.forEach((_c, i) => this._watchDarkSettle(i));
+            return GLib.SOURCE_REMOVE;
+        });
     }
 
     get lastColor() {
@@ -512,6 +530,8 @@ class LightingService extends Signals.EventEmitter {
         this._clearRetry();
         if (this._resumeId)
             GLib.source_remove(this._resumeId);
+        if (this._settleId)
+            GLib.source_remove(this._settleId);
         Main.sessionMode.disconnect(this._sessionId);
         if (this._sleepId)
             this._login.disconnectSignal(this._sleepId);

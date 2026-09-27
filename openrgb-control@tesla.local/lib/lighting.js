@@ -1,6 +1,8 @@
 // High-level lighting operations built on the SDK client. Each device exposes
 // a different mix of modes, so every action picks the best-fitting mode.
 
+import GLib from 'gi://GLib';
+
 import {ColorMode, ModeFlag, colorToRgb, rgbToColor} from './protocol.js';
 
 const OFF_RE = /^off$/i;
@@ -26,15 +28,49 @@ function findMode(ctrl, predicate) {
     return index >= 0 ? index : -1;
 }
 
+// Per-LED effects such as music visualizers blank every LED between beats, so
+// an all-black per-LED device only counts as off once it has stayed dark for
+// DARK_SETTLE_MS, was already dark when first seen, or was blanked by us.
+const DARK_SETTLE_MS = 3000;
+const darkSince = new Map(); // key -> null (lit) | ms timestamp it went dark
+
+const nowMs = () => GLib.get_monotonic_time() / 1000;
+
+function perLedOn(ctrl) {
+    const key = deviceKey(ctrl);
+    if (ctrl.colors.some(c => c !== 0)) {
+        darkSince.set(key, null);
+        return true;
+    }
+    const since = darkSince.get(key);
+    if (since === undefined) {
+        darkSince.set(key, 0);
+        return false;
+    }
+    if (since === null) {
+        darkSince.set(key, nowMs());
+        return true;
+    }
+    return nowMs() - since < DARK_SETTLE_MS;
+}
+
 export function isOn(ctrl) {
     const mode = activeMode(ctrl);
     if (!mode || OFF_RE.test(mode.name))
         return false;
     if (mode.colorMode === ColorMode.PER_LED)
-        return ctrl.colors.some(c => c !== 0);
+        return perLedOn(ctrl);
     if (mode.colorMode === ColorMode.MODE_SPECIFIC)
         return mode.colors.some(c => c !== 0);
     return true;
+}
+
+// Milliseconds until a device that just went dark settles into "off", or 0.
+export function darkSettleDelay(ctrl) {
+    if (!isOn(ctrl) || activeMode(ctrl)?.colorMode !== ColorMode.PER_LED)
+        return 0;
+    const since = darkSince.get(deviceKey(ctrl));
+    return since ? Math.max(1, Math.ceil(DARK_SETTLE_MS - (nowMs() - since))) : 0;
 }
 
 // Returns a representative color for the device, or null for effects.
@@ -111,6 +147,7 @@ export async function turnOff(client, index) {
         return;
     }
     await setColor(client, index, 0);
+    darkSince.set(deviceKey(ctrl), 0);
 }
 
 export function snapshot(ctrl) {
