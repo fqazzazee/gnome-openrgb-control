@@ -49,7 +49,7 @@ cd gnome-openrgb-control
 
 Then **log out and back in**. On Wayland, GNOME Shell only picks up new extensions at login.
 
-`install.sh` also installs and starts `openrgb-server.service`, a systemd user service that runs `openrgb --server` at login. Pass `--no-service` if you already run an OpenRGB server, for example the OpenRGB GUI with its SDK server enabled.
+`install.sh` also installs and starts `openrgb-server.service`, a systemd user service that runs `openrgb --server --startminimized` at login. The GUI stays in the tray because headless `--server` does not load plugins, so effects saved in profiles (e.g. the Effects plugin) would not start. Pass `--no-service` if you already run an OpenRGB server, for example the OpenRGB GUI with its SDK server enabled.
 
 <details>
 <summary>Manual installation</summary>

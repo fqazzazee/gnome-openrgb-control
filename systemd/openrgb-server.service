@@ -4,7 +4,9 @@ After=graphical-session.target
 PartOf=graphical-session.target
 
 [Service]
-ExecStart=/usr/bin/openrgb --server --server-host 127.0.0.1 --noautoconnect
+# Runs with the GUI minimized to the tray: headless --server skips plugins,
+# so profiles that carry Effects plugin settings would load without effects.
+ExecStart=/usr/bin/openrgb --server --server-host 127.0.0.1 --startminimized --noautoconnect
 Restart=on-failure
 RestartSec=3
 

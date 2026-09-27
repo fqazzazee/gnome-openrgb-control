@@ -243,7 +243,7 @@ class LightingService extends Signals.EventEmitter {
         const port = `${this._settings.get_int('port')}`;
         const spawnDirect = () => {
             try {
-                Gio.Subprocess.new(['openrgb', '--server', '--server-port', port, '--noautoconnect'],
+                Gio.Subprocess.new(['openrgb', '--server', '--server-port', port, '--startminimized', '--noautoconnect'],
                     Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE);
             } catch (e) {
                 console.warn(`[openrgb-control] Could not start OpenRGB: ${e.message}`);
