@@ -1,0 +1,15 @@
+[Unit]
+Description=Turn RGB lighting off at boot (OpenRGB "off" profile)
+# i2c-dev must be loaded for RAM and motherboard lighting.
+After=systemd-modules-load.service
+ConditionPathExists=/etc/openrgb/profiles/off.json
+
+[Service]
+Type=oneshot
+# Runs as root before anyone logs in, from a copy of the user's config and
+# profile in /etc/openrgb (see install-boot-off.sh).
+ExecStart=/usr/bin/openrgb --noautoconnect --config /etc/openrgb --profile off
+TimeoutStartSec=90
+
+[Install]
+WantedBy=multi-user.target

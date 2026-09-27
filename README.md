@@ -64,6 +64,14 @@ gnome-extensions enable openrgb-control@tesla.local
 ```
 </details>
 
+### LEDs off at boot (optional)
+
+```bash
+./install-boot-off.sh
+```
+
+This installs `openrgb-boot-off.service`, a system service that loads your OpenRGB profile named **off** at boot, so the lights go dark before anyone logs in. It copies that profile and your `OpenRGB.json` to `/etc/openrgb` and needs `sudo`. Rerun it after you change the profile.
+
 ## How it works
 
 - The extension talks directly to the OpenRGB SDK server on `127.0.0.1:6742` over a single persistent connection. It has its own implementation of the SDK's binary protocol (`lib/protocol.js`, `lib/client.js`). There are no helper processes, and it doesn't call the `openrgb` CLI, which takes seconds per call.
@@ -83,6 +91,9 @@ gnome-extensions enable openrgb-control@tesla.local
 gnome-extensions uninstall openrgb-control@tesla.local
 systemctl --user disable --now openrgb-server.service
 rm ~/.config/systemd/user/openrgb-server.service
+# if you ran install-boot-off.sh:
+sudo systemctl disable openrgb-boot-off.service
+sudo rm /etc/systemd/system/openrgb-boot-off.service /etc/openrgb/OpenRGB.json /etc/openrgb/profiles/off.json
 ```
 
 ## License
