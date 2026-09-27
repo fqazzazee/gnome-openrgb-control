@@ -1,0 +1,48 @@
+.openrgb-swatches {
+    spacing: 6px;
+    padding: 2px 0;
+}
+
+.openrgb-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+}
+
+.openrgb-swatch:hover,
+.openrgb-swatch:focus {
+    border-color: rgba(255, 255, 255, 0.85);
+}
+
+.openrgb-swatch:active {
+    border-color: #ffffff;
+}
+
+.openrgb-slider-row {
+    spacing: 8px;
+}
+
+.openrgb-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    margin: 0 6px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.openrgb-panel-label {
+    padding-left: 4px;
+}
+
+.openrgb-master-switch {
+    font-weight: bold;
+}
+
+.openrgb-footer {
+    spacing: 6px;
+}
+
+.openrgb-footer-button {
+    padding: 6px;
+}

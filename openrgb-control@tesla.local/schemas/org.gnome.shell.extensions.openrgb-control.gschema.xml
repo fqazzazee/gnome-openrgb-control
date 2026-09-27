@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.openrgb-control" path="/org/gnome/shell/extensions/openrgb-control/">
+    <!-- Appearance -->
+    <key name="indicator-position" type="s">
+      <choices>
+        <choice value="top-bar"/>
+        <choice value="quick-settings"/>
+      </choices>
+      <default>'top-bar'</default>
+      <summary>Where the lighting controls live</summary>
+    </key>
+    <key name="show-profile-label" type="b">
+      <default>false</default>
+      <summary>Show the active profile name next to the top bar icon</summary>
+    </key>
+    <key name="show-devices" type="b">
+      <default>true</default>
+      <summary>Show per-device controls in the menu</summary>
+    </key>
+
+    <!-- Connection -->
+    <key name="host" type="s">
+      <default>'127.0.0.1'</default>
+      <summary>OpenRGB SDK server host</summary>
+    </key>
+    <key name="port" type="i">
+      <range min="1024" max="65535"/>
+      <default>6742</default>
+      <summary>OpenRGB SDK server port</summary>
+    </key>
+    <key name="manage-server" type="b">
+      <default>true</default>
+      <summary>Start the OpenRGB server automatically when it is not running</summary>
+    </key>
+    <key name="reconnect-interval" type="i">
+      <range min="2" max="300"/>
+      <default>5</default>
+      <summary>Seconds between reconnect attempts</summary>
+    </key>
+
+    <!-- Profiles -->
+    <key name="on-profile" type="s">
+      <default>''</default>
+      <summary>Profile loaded when lighting is switched on (empty restores the previous state)</summary>
+    </key>
+    <key name="off-profile" type="s">
+      <default>''</default>
+      <summary>Profile loaded when lighting is switched off (empty turns each device off)</summary>
+    </key>
+    <key name="startup-profile" type="s">
+      <default>''</default>
+      <summary>Profile applied once per login</summary>
+    </key>
+    <key name="hidden-profiles" type="as">
+      <default>[]</default>
+      <summary>Profiles hidden from the menu</summary>
+    </key>
+
+    <!-- Devices -->
+    <key name="excluded-devices" type="as">
+      <default>[]</default>
+      <summary>Devices (name|location) that global actions skip and the menu hides</summary>
+    </key>
+    <key name="device-names" type="s">
+      <default>'{}'</default>
+      <summary>JSON map of device key to custom display name</summary>
+    </key>
+    <key name="device-state" type="s">
+      <default>'{}'</default>
+      <summary>JSON map of device key to the state saved before switching off</summary>
+    </key>
+
+    <!-- Colors -->
+    <key name="color-presets" type="as">
+      <default>['#ffffff', '#ff0000', '#ff6a00', '#ffd000', '#00ff3c', '#00e5ff', '#0040ff', '#8a00ff', '#ff00b4']</default>
+      <summary>Quick color swatches</summary>
+    </key>
+    <key name="last-color" type="s">
+      <default>'#ffffff'</default>
+      <summary>Last color applied, used when a device turns on with no saved state</summary>
+    </key>
+    <key name="brightness" type="d">
+      <range min="0" max="1"/>
+      <default>1.0</default>
+      <summary>Global brightness</summary>
+    </key>
+
+    <!-- Automation -->
+    <key name="off-on-lock" type="b">
+      <default>false</default>
+      <summary>Switch lighting off while the screen is locked</summary>
+    </key>
+    <key name="off-on-suspend" type="b">
+      <default>true</default>
+      <summary>Switch lighting off before suspend and restore on resume</summary>
+    </key>
+
+    <!-- Shortcuts -->
+    <key name="toggle-lighting" type="as">
+      <default>['&lt;Super&gt;&lt;Shift&gt;l']</default>
+      <summary>Toggle lighting on or off</summary>
+    </key>
+    <key name="next-profile" type="as">
+      <default>['&lt;Super&gt;&lt;Shift&gt;period']</default>
+      <summary>Switch to the next profile</summary>
+    </key>
+  </schema>
+</schemalist>

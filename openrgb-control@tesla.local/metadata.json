@@ -1,0 +1,14 @@
+{
+  "uuid": "openrgb-control@tesla.local",
+  "name": "RGB Lighting",
+  "description": "Control OpenRGB devices from the top bar or Quick Settings: one-click profiles, a global on/off switch, color swatches, hue and brightness sliders, and per-device modes, colors and speed. Talks to the OpenRGB SDK server directly and can start it for you.",
+  "url": "https://github.com/fqazzazee/gnome-openrgb-control",
+  "settings-schema": "org.gnome.shell.extensions.openrgb-control",
+  "session-modes": [
+    "user",
+    "unlock-dialog"
+  ],
+  "shell-version": [
+    "50"
+  ]
+}
