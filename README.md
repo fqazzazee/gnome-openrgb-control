@@ -96,6 +96,10 @@ sudo systemctl disable openrgb-boot-off.service
 sudo rm /etc/systemd/system/openrgb-boot-off.service /etc/openrgb/OpenRGB.json /etc/openrgb/profiles/off.json
 ```
 
+## Support
+
+If it saved you opening OpenRGB every time you want a change, you can [buy me a coffee ☕](https://buymeacoffee.com/fqazzazee).
+
 ## License
 
 [GPL-2.0-or-later](LICENSE)
